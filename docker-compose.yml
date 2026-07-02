@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+
+  # ── Backend API (Node.js / Express) ──
+  backend:
+    build: ./backend
+    container_name: hillside-backend
+    ports:
+      - "3000:3000"       # API accessible at http://localhost:3000/api
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  # ── Frontend (nginx serving static files + proxy) ──
+  frontend:
+    build: ./frontend
+    container_name: hillside-frontend
+    ports:
+      - "8080:80"         # App accessible at http://localhost:8080
+    depends_on:
+      - backend           # Wait for backend to start first
+    restart: unless-stopped
